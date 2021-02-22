@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  database:
+    image: postgres:13.2-alpine
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: postgres
+    ports:
+      - 5430:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  catapultlabs:
+    image: catapultlabs:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - APP_SLEEP=0
+      - SERVER_PORT=80
+    ports:
+      - 80:80
+    links:
+      - database
