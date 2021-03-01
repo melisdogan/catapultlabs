@@ -1,4 +1,4 @@
-<div>
+<div [hidden]="!authenticated()">
   <div style="display: block" *ngIf="barChartData">
     <canvas baseChart
             [datasets]="barChartData"
@@ -8,4 +8,7 @@
             [chartType]="barChartType">
     </canvas>
   </div>
+</div>
+<div [hidden]="authenticated()">
+  <a routerLinkActive="active" routerLink="/login">Login</a>
 </div>

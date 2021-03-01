@@ -3,6 +3,7 @@ import {ReadingService} from "../../service/reading.service";
 import {ChartDataSets, ChartType} from "chart.js";
 import {Label} from 'ng2-charts';
 import {Client} from "../client";
+import {AppService} from "../../service/app.service";
 
 @Component({
   selector: 'app-usage-graph',
@@ -11,9 +12,10 @@ import {Client} from "../client";
 })
 export class UsageGraphComponent implements OnInit {
   clients: Client[] | undefined;
-  constructor(private readingService: ReadingService) {
+  constructor(private readingService: ReadingService, private appService: AppService) {
 
   }
+  authenticated() { return this.appService.authenticated; }
   public colorScheme = [
     'rgba(243, 166, 131,1.0)',
     'rgba(247, 215, 148,1.0)',
@@ -39,22 +41,23 @@ export class UsageGraphComponent implements OnInit {
   public barChartData: ChartDataSets[] = []
 
   ngOnInit(): void {
-    this.readingService.getClients().subscribe(
-      (clients: Client[]) => {
-        this.clients = clients
-        this.barChartData.pop()
-        clients.forEach(client => {
-          client.meterList.forEach(meter => {
-            this.barChartData.push({data: meter.readingList.map(item => item.reading), fill: false, label: client.name + ": " + meter.id.toString(), borderColor: this.colorScheme[meter.id-1], lineTension: 0.2})
+      // @ts-ignore
+      this.readingService.getClients().subscribe(
+        (clients: Client[]) => {
+          this.clients = clients
+          this.barChartData.pop()
+          clients.forEach(client => {
+            client.meterList.forEach(meter => {
+              this.barChartData.push({data: meter.readingList.map(item => item.reading), fill: false, label: client.name + ": " + meter.id.toString(), borderColor: this.colorScheme[meter.id-1], lineTension: 0.2})
+            })
+            this.barChartLabels = (clients[1].meterList[0].readingList.map(item => {
+              var date = new Date(item.timestamp)
+              return date.toTimeString()
+            }))
           })
-          this.barChartLabels = (clients[1].meterList[0].readingList.map(item => {
-            var date = new Date(item.timestamp)
-            return date.toTimeString()
-          }))
-        })
 
-      }
-    )
+        }
+      )
   }
 
 }

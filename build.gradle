@@ -23,14 +23,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.session:spring-session-data-redis'
+	implementation 'io.lettuce:lettuce-core'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.google.code.gson:gson'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile 'org.springframework.session:spring-session-core'
 }
-
+dependencyManagement {
+	imports {
+		mavenBom 'org.springframework.session:spring-session-bom:Corn-SR2'
+	}
+}
 test {
 	useJUnitPlatform()
 }
