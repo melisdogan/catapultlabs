@@ -1,4 +1,4 @@
-FROM openjdk:11-alpine
+FROM openjdk:11
 
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     SERVER_PORT=80

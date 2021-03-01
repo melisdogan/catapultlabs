@@ -1,5 +1,11 @@
 version: '3.9'
 services:
+  messagequeue:
+    image: rmohr/activemq:5.15.9
+    ports:
+      - 61616:61616
+      - 8161:8161
+
   database:
     image: postgres:13.2-alpine
     environment:
@@ -10,13 +16,25 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
-  catapultlabs:
+  backend:
     image: catapultlabs:latest
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - APP_SLEEP=0
       - SERVER_PORT=80
     ports:
-      - 80:80
+      - 8080:80
     links:
       - database
+      - messagequeue
+
+  frontend:
+    image: catapultlabs-client
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      NGINX_BACKEND_URL: backend
+    command: /bin/bash -c "envsubst '$$NGINX_BACKEND_URL' < /tmp/default.template.conf > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    links:
+      - backend
