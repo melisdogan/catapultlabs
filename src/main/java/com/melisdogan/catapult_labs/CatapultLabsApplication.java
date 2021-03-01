@@ -16,7 +16,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
 import org.springframework.session.web.http.HttpSessionIdResolver;
 
-
 @SpringBootApplication
 @EnableJms
 @EnableScheduling
@@ -32,17 +31,13 @@ public class CatapultLabsApplication {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.cors();
-			http
-					.httpBasic()
-					.and()
+					.cors().and()
+					.httpBasic().and()
 					.authorizeRequests()
 					.antMatchers("/index.html", "/", "/home", "/login", "/token").permitAll()
-					.anyRequest().authenticated()
-					.and()
+					.anyRequest().authenticated().and()
 					.sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.NEVER)
-					.and()
+					.sessionCreationPolicy(SessionCreationPolicy.NEVER).and()
 					.csrf()
 					.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 

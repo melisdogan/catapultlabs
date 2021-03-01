@@ -6,6 +6,11 @@ services:
       - 61616:61616
       - 8161:8161
 
+  redis:
+    image: library/redis:6.2.0-alpine
+    ports:
+      - 6379:6379
+
   database:
     image: postgres:13.2-alpine
     environment:
@@ -27,6 +32,7 @@ services:
     links:
       - database
       - messagequeue
+      - redis
 
   frontend:
     image: catapultlabs-client

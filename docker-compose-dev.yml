@@ -19,3 +19,7 @@ services:
     image: library/redis:6.2.0-alpine
     ports:
       - 6379:6379
+  redis:
+    image: library/redis:6.2.0-alpine
+    ports:
+      - 6379:6379
