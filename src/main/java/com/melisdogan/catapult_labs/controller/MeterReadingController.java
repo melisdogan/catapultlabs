@@ -16,7 +16,7 @@ import java.util.Map;
 
 
 @RestController
-@CrossOrigin(origins = "frontend")
+@RequestMapping("/api")
 public class MeterReadingController {
 
     @Resource
