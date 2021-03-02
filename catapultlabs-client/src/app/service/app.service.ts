@@ -17,7 +17,7 @@ export class AppService {
       authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
 
-    this.http.get('http://localhost:8080/user', {headers: headers}).subscribe(response => {
+    this.http.get('backend/user', {headers: headers}).subscribe(response => {
       // @ts-ignore
       if (response['name']) {
         this.authenticated = true;
@@ -34,7 +34,7 @@ export class AppService {
       authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
 
-    this.http.get('http://localhost:8080/token', {headers: headers}).subscribe(response => {
+    this.http.get('backend/token', {headers: headers}).subscribe(response => {
       // @ts-ignore
       this.cookieService.set("token", response["token"])
       return callback && callback();

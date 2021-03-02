@@ -33,6 +33,7 @@ services:
       - database
       - messagequeue
       - redis
+      - frontend
 
   frontend:
     image: catapultlabs-client
