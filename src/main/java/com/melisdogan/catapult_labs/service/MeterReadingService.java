@@ -26,8 +26,7 @@ public class MeterReadingService {
     MeterRepository meterRepository;
 
     public List<Client> getReadings(){
-        List<Client> clients = clientRepository.findAll();
-        return clients;
+        return clientRepository.findAll();
     }
 
     @JmsListener(destination = "test-queue")
