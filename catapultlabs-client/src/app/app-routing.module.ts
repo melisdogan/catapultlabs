@@ -5,7 +5,8 @@ import {LoginComponent} from "./components/login/login.component";
 
 const routes: Routes = [
   { path: 'get-readings-chart', component: UsageGraphComponent},
-  { path: 'login', component: LoginComponent}
+  { path: 'login', component: LoginComponent},
+  { path: '',   redirectTo: '/get-readings-chart', pathMatch: 'full'}
 ];
 
 @NgModule({

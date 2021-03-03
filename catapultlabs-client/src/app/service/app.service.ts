@@ -6,7 +6,6 @@ import {CookieService} from "ngx-cookie-service";
 export class AppService {
 
   authenticated = false;
-  token = ""
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
   }

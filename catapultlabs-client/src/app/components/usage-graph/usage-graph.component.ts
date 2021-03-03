@@ -1,9 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ReadingService} from "../../service/reading.service";
-import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
+import {ChartDataSets, ChartOptions, ChartType, ChartPoint} from "chart.js";
 import {BaseChartDirective, Label} from 'ng2-charts';
 import {Client} from "../client";
 import {AppService} from "../../service/app.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-usage-graph',
@@ -14,7 +15,7 @@ export class UsageGraphComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
   clients: Client[] | undefined;
   isFiltered = false
-  constructor(private readingService: ReadingService, private appService: AppService) {
+  constructor(private readingService: ReadingService, private appService: AppService, private router: Router) {
 
   }
   authenticated() { return this.appService.authenticated; }
@@ -32,18 +33,59 @@ export class UsageGraphComponent implements OnInit {
     this.isFiltered = false
     this.chart?.chart.update()
   }
+  changeDateFilter(isToday: boolean){
+    this.chartData = []
+    this.chartLabels = []
+    // @ts-ignore
+    this.clients.forEach((client, index) => {
+      client.meterList.forEach((meter) => {
+        this.chartData.push({
+          hidden: false,
+          borderColor: this.chartColorScheme[index%10],
+          data: meter.readingList
+            .filter(item => {
+              return !isToday || new Date(item.timestamp).toDateString() === new Date().toDateString()
+            })
+            .map(item => (
+              {x: new Date(item.timestamp), y: item.reading}
+            )),
+          fill: false,
+          label: client.name + ": " + meter.id.toString(),
+          lineTension: 0.2})
+      })
+
+    })
+    this.chart?.chart.update()
+  }
 
   public chartOptions: ChartOptions = {
     responsive: true,
     legend: {
-      labels: { fontColor: 'white' }
+      labels: { fontColor: 'white', fontFamily: 'Fira Sans' }
+    },
+    tooltips: {
+      mode: 'nearest',
+      titleFontFamily: 'Fira Sans',
+      bodyFontFamily: 'Fira Sans'
     },
     scales: {
       xAxes: [{
-        ticks: { fontColor: 'white' }
+        type: 'time',
+        distribution: 'series',
+        time: {
+          round: 'minute',
+          unit: 'hour',
+          displayFormats: {
+            hour: 'h:mm a'
+          }
+        },
+        ticks: {
+          fontColor: 'white',
+          fontFamily: 'Fira Sans'
+        }
       }],
       yAxes: [{
-        ticks: { fontColor: 'white' }
+        ticks: { fontColor: 'white', fontFamily: 'Fira Sans' }
       }]
     }
   };
@@ -66,6 +108,9 @@ export class UsageGraphComponent implements OnInit {
     'rgba(89, 98, 117,1)'
   ];
   ngOnInit(): void {
+    if(!this.authenticated()) {
+      this.router.navigateByUrl('/login');
+    }
       // @ts-ignore
       this.readingService.getClients().subscribe(
         (clients: Client[]) => {
@@ -73,14 +118,11 @@ export class UsageGraphComponent implements OnInit {
           this.chartData.pop()
           clients.forEach((client, index) => {
             client.meterList.forEach((meter) => {
-              this.chartData.push({hidden: false, borderColor: this.chartColorScheme[index%10], data: meter.readingList.map(item => item.reading), fill: false, label: client.name + ": " + meter.id.toString(), lineTension: 0.2})
+              this.chartData.push({hidden: false, borderColor: this.chartColorScheme[index%10], data: meter.readingList.map(item => (
+                  {x: new Date(item.timestamp), y: item.reading}
+                )), fill: false, label: client.name + ": " + meter.id.toString(), lineTension: 0.2})
             })
-            this.chartLabels = (clients[1].meterList[0].readingList.map(item => {
-              var date = new Date(item.timestamp)
-              return date.toLocaleTimeString()
-            }))
           })
-
         }
       )
   }

@@ -11,6 +11,8 @@ import {LoginComponent} from './components/login/login.component';
 import {FormsModule} from "@angular/forms";
 import {AppService} from "./service/app.service";
 import {CookieService} from 'ngx-cookie-service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
 
 
 @Injectable()
@@ -34,7 +36,9 @@ export class XhrInterceptor implements HttpInterceptor {
     AppRoutingModule,
     ChartsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    BsDropdownModule.forRoot()
   ],
   providers: [ReadingService, AppService, { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }, CookieService],
   bootstrap: [AppComponent]
