@@ -5,6 +5,7 @@ import {BaseChartDirective, Label} from 'ng2-charts';
 import {Client} from "../client";
 import {AppService} from "../../service/app.service";
 import {Router} from "@angular/router";
+import {error} from "@angular/compiler/src/util";
 
 @Component({
   selector: 'app-usage-graph',
@@ -108,9 +109,6 @@ export class UsageGraphComponent implements OnInit {
     'rgba(89, 98, 117,1)'
   ];
   ngOnInit(): void {
-    if(!this.authenticated()) {
-      this.router.navigateByUrl('/login');
-    }
       // @ts-ignore
       this.readingService.getClients().subscribe(
         (clients: Client[]) => {
@@ -123,6 +121,9 @@ export class UsageGraphComponent implements OnInit {
                 )), fill: false, label: client.name + ": " + meter.id.toString(), lineTension: 0.2})
             })
           })
+        },
+        error => {
+          this.router.navigateByUrl('/login');
         }
       )
   }

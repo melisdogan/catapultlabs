@@ -22,7 +22,7 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
 
   backend:
-    image: melisdogan/catapultlabs:latest
+    image: melisdogan/meter-dashboard:latest
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - APP_SLEEP=0
@@ -35,7 +35,7 @@ services:
       - redis
 
   frontend:
-    image: melisdogan/catapultlabs-client
+    image: melisdogan/meter-dashboard-client
     ports:
       - 80:80
       - 443:443
